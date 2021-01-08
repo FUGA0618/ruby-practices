@@ -1,18 +1,19 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-require "optparse"
-require "date"
+require 'optparse'
+require 'date'
 
 # オプションとして-yと-mを受け付ける設定
 options = ARGV.getopts('y:m:')
 
 # -yオプションがついていたら、第一引数に渡す年を指定
 # ついていなければ今年にする
-year = options["y"].to_i || Date.today.year
+year = options['y'].to_i || Date.today.year
 
 # -mオプションがついていたら、第二引数に渡す月を指定
 # ついていなければ今月にする
-month = options["m"].to_i || Date.today.month
+month = options['m'].to_i || Date.today.month
 
 # 対象年月の日付を作成
 date = Date.new(year, month, 1)
@@ -21,35 +22,29 @@ last_day_of_month = Date.new(date.year, date.month, -1)
 
 # フォーマットを出力
 puts "     #{date.month}月 #{date.year}"
-puts "日 月 火 水 木 金 土"
+puts '日 月 火 水 木 金 土'
 
 # カレンダーの出力処理
 (date..last_day_of_month).each do |target_date|
   # 日付出力用の変数を定義
-  output_date = ""
+  output_date = ''
 
   # 日付が「1」の場合、文字列の前に空白を挿入する処理
   # date.cwdayで曜日を判定（月曜なら1）
   # date.cwday * 3つのスペースを挿入して、フォーマットの曜日の下にくるように調整
-  if target_date.day == 1
-    output_date += "\s" * ( date.cwday * 3 )
-  end
+  output_date += "\s" * (date.cwday * 3) if target_date.day == 1
 
   # 日付が一桁の場合、二桁と合わせるためにスペースを１つ追加
   # date.dayはそのままだとIntegerでサイズは8
   # 一桁というのを明示的にしたいので、Stringにキャストして判定
-  if target_date.day.to_s.size == 1
-    output_date += " "
-  end
+  output_date += ' ' if target_date.day.to_s.size == 1
 
   # output_dateに表示する日付を追加
   output_date += "#{target_date.day} "
 
   # 出力する日が土曜日の場合、末尾に改行を追加
-  if target_date.saturday?
-    output_date += "\n"
-  end
-  
+  output_date += "\n" if target_date.saturday?
+
   # 日付を出力
   # putsだと改行されてしまうので、printを使用
   print output_date
