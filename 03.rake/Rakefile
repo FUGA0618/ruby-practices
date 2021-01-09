@@ -1,8 +1,8 @@
-# coding: utf-8
+# frozen_string_literal: true
 
 CC = 'gcc'
 
-task :default => 'hello.o'
+task default: 'hello.o'
 
 desc 'Build application'
 file 'hello.o' do
