@@ -1,0 +1,10 @@
+# coding: utf-8
+
+CC = 'gcc'
+
+task :default => 'hello.o'
+
+desc 'Build application'
+file 'hello.o' do
+  sh "#{CC} hello.c -o hello"
+end
