@@ -13,29 +13,34 @@ frames = [] # 全フレームを格納する配列
 scores.each_with_index do |s, i|
   frame << (s == 'X' ? 10 : s.to_i)
 
-  frame << 0 if frame[0] == 10
+  # 9フレーム目までの処理
+  if frames.size < 9
+    frame << 0 if frame[0] == 10
 
-  if frame.size == 2 || scores[i + 1].nil?
+    if frame.size == 2
+      frames << frame
+      frame = []
+    end
+  # 10フレーム目で最後の1文字になったら、framesに格納する
+  elsif scores[i + 1].nil?
     frames << frame
-    frame = []
   end
 end
+puts "frames: #{frames}"
 
 # 得点を足していく
 total_score = 0
 frames.each_with_index do |f, i|
+  next_frame = frames[i + 1]
   total_score +=
     # strikeの場合
     if f[0] == 10 && i < 9
-      # 次のフレームもstrikeの場合
-      if frames[i + 1][0] == 10
-        10 + 10 + frames[i + 2][0]
-      else
-        10 + frames[i + 1].sum
-      end
+      # 次のフレームがストライクか、または9フレーム目かによって加算点を判定
+      addition_point = next_frame[0] != 10 || i == 8 ? next_frame[1] : frames[i + 2][0]
+      10 + next_frame[0] + addition_point
     # spareの場合
     elsif f.sum == 10 && i < 9
-      10 + frames[i + 1][0]
+      10 + next_frame[0]
     # それ以外
     else
       f.sum
