@@ -26,7 +26,6 @@ scores.each_with_index do |s, i|
     frames << frame
   end
 end
-puts "frames: #{frames}"
 
 # 得点を足していく
 total_score = 0
