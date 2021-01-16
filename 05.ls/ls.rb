@@ -16,11 +16,7 @@ def generate_permission_text(file_stat)
   }
   mode = format('%o', file_stat.mode)
   chars_mode = mode.slice(-3, 3).chars
-  text = ''
-  chars_mode.each do |t|
-    text += modes[t.to_sym]
-  end
-  text
+  chars_mode.map { |t| modes[t.to_sym] }.join
 end
 
 # -lオプションを指定した場合の出力文字列生成メソッド
@@ -49,14 +45,16 @@ def generate_output_string_for_l_option(output_files, path)
 end
 
 # -lオプションを指定しない場合の出力文字列生成メソッド
-def generate_output_string(column, row, output_files)
+def generate_output_string(column, output_files)
+  row = (output_files.size / column.to_f).ceil # 行数
+
   row.times do |row_repeat_num|
     output_text = []
     target_index = row_repeat_num
 
-    column.times do |column_repeat_num|
-      target_index += row if column_repeat_num.positive? # 初回のループ時はインデックスを更新しない
+    column.times do
       output_text << output_files[target_index] if output_files[target_index]
+      target_index += row
     end
 
     output_text.each { |f| print f.ljust(24) }
@@ -106,8 +104,7 @@ if options['l']
   generate_output_string_for_l_option(output_files, path)
 # -lオプションなし
 else
-  column = 3 # 列数
-  row = (files_size / column.to_f).ceil # 行数
+  COLUMN = 3 # 列数
 
-  generate_output_string(column, row, output_files)
+  generate_output_string(COLUMN, output_files)
 end
